@@ -8,14 +8,15 @@
       href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.7/dist/tailwind.min.css"
       rel="stylesheet"
     />
+    <script src="https://unpkg.com/htmx.org@1.9.6"></script>
   </head>
   <body class="bg-gray-100">
     <div class="min-h-screen flex items-center justify-center">
       <form
         class="bg-white p-6 rounded-lg shadow-md max-w-md"
         enctype="multipart/form-data"
-        action="/auto-grader/upload"
-        method="post"
+        hx-post="/auto-grader/upload"
+        hx-swap="outerHTML"
       >
         <label class="block mb-4">
           <span class="text-gray-700">Choose a file to upload</span>
@@ -24,6 +25,7 @@
             name="document"
             type="file"
             class="mt-1 py-2 px-3 block w-full border rounded-lg shadow-sm focus:ring focus:ring-opacity-50 focus:ring-blue-400"
+            required
           />
         </label>
         <button

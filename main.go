@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"thing/auto-grader/routes"
 	"time"
 
 	"github.com/gofiber/fiber/v2"
@@ -43,19 +44,8 @@ func main() {
 	})
 
 	app.Static("/", "./public")
-	// autoGrader := app.Group("auto-grader")
-
-	app.Get("/auto-grader", func(c *fiber.Ctx) error {
-		return c.Render("auto-grader", fiber.Map{})
-	})
-
-	app.Post("/auto-grader/upload", func(c *fiber.Ctx) error {
-		file, err := c.FormFile("document")
-		if err != nil {
-			return err
-		}
-		return c.SaveFile(file, fmt.Sprintf("./uploaded-files/%s", file.Filename))
-	})
+	autoGraderGroup := app.Group("auto-grader")
+	autoGrader.Router(autoGraderGroup)
 
 	app.Get("/pom", func(c *fiber.Ctx) error {
 		return c.Render("pom", fiber.Map{})
