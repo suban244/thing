@@ -19,6 +19,17 @@
         hx-swap="outerHTML"
       >
         <label class="block mb-4">
+          <span class="text-gray-700">Enter a username</span>
+          <input
+            id="username"
+            name="username"
+            type="text"
+            class="mt-1 py-2 px-3 block w-full border rounded-lg shadow-sm focus:ring focus:ring-opacity-50 focus:ring-blue-400"
+            required
+          />
+        </label>
+
+        <label class="block mb-4">
           <span class="text-gray-700">Choose a file to upload</span>
           <input
             id="document"
@@ -28,6 +39,7 @@
             required
           />
         </label>
+
         <button
           type="submit"
           class="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg"

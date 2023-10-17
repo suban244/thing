@@ -5,7 +5,8 @@ import (
 	"fmt"
 	"log"
 	"os"
-	"thing/auto-grader/routes"
+	"thing/auto-grader/grader"
+	graderroutes "thing/auto-grader/routes"
 	"time"
 
 	"github.com/gofiber/fiber/v2"
@@ -31,6 +32,8 @@ func main() {
 		port = "3000"
 	}
 
+	// TODO: Add some thread safety
+	// https://github.com/jackc/pgx/wiki/Getting-started-with-pgx
 	conn, err := pgx.Connect(context.Background(), os.Getenv("DATABASE_URL"))
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Unable to connect to database: %v\n", err)
@@ -43,9 +46,14 @@ func main() {
 		Views: engine,
 	})
 
+	app.Get("/", func(c *fiber.Ctx) error {
+		return c.Render("index", fiber.Map{})
+	})
+
+	graderService := grader.NewService(conn)
 	app.Static("/", "./public")
 	autoGraderGroup := app.Group("auto-grader")
-	autoGrader.Router(autoGraderGroup)
+	graderroutes.Router(autoGraderGroup, graderService)
 
 	app.Get("/pom", func(c *fiber.Ctx) error {
 		return c.Render("pom", fiber.Map{})
