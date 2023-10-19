@@ -40,7 +40,7 @@ func (s *service) LaunchGrader(fileid string) {
 }
 
 func (s *service) grade(fileid string) {
-	// TODO: MAGIC
+	// TODO: MAGIC, Makes the grpc call
 	time.Sleep(time.Second * 60)
 
 	// TODO: figure out how to remove this variable without causing error
@@ -69,7 +69,10 @@ func (s *service) RegisterFile(username string, filename string) (string, error)
 	var fileid int
 	err := s.conn.QueryRow(
 		context.Background(),
-		"insert into submissions (username, filename) values ($1, $2) returning fileid;",
+		`insert into submissions 
+    (username, filename) 
+      values ($1, $2) 
+    returning fileid;`,
 		username, filename).
 		Scan(&fileid)
 	return strconv.Itoa(fileid), err
