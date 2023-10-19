@@ -1,0 +1,21 @@
+syntax = "proto3";
+
+package GraderRequestPackage;
+
+option go_package = "./graderrequest";
+
+service GraderRequestService {
+  rpc GradeFile(File) returns (Status);
+}
+
+message File {
+  string fileid = 1;
+  string filename = 2;
+}
+
+message noParams {}
+
+message Status {
+  int32 statusCode = 1;
+}
+

@@ -46,7 +46,7 @@ func UploadFile(g grader.Service) fiber.Handler {
 		}
 
 		// TODO: Launch a process to grade file
-		g.LaunchGrader(fileid)
+		g.LaunchGrader(fileid, file.Filename)
 
 		return c.Render("file-upload-success", fiber.Map{})
 	}

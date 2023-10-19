@@ -2,10 +2,10 @@
 """Client and server classes corresponding to protobuf-defined services."""
 import grpc
 
-import request_pb2 as request__pb2
+import graderrequest_pb2 as graderrequest__pb2
 
 
-class GradeServiceStub(object):
+class GraderRequestServiceStub(object):
     """Missing associated documentation comment in .proto file."""
 
     def __init__(self, channel):
@@ -15,13 +15,13 @@ class GradeServiceStub(object):
             channel: A grpc.Channel.
         """
         self.GradeFile = channel.unary_unary(
-                '/requestPackage.GradeService/GradeFile',
-                request_serializer=request__pb2.File.SerializeToString,
-                response_deserializer=request__pb2.Status.FromString,
+                '/GraderRequestPackage.GraderRequestService/GradeFile',
+                request_serializer=graderrequest__pb2.File.SerializeToString,
+                response_deserializer=graderrequest__pb2.Status.FromString,
                 )
 
 
-class GradeServiceServicer(object):
+class GraderRequestServiceServicer(object):
     """Missing associated documentation comment in .proto file."""
 
     def GradeFile(self, request, context):
@@ -31,21 +31,21 @@ class GradeServiceServicer(object):
         raise NotImplementedError('Method not implemented!')
 
 
-def add_GradeServiceServicer_to_server(servicer, server):
+def add_GraderRequestServiceServicer_to_server(servicer, server):
     rpc_method_handlers = {
             'GradeFile': grpc.unary_unary_rpc_method_handler(
                     servicer.GradeFile,
-                    request_deserializer=request__pb2.File.FromString,
-                    response_serializer=request__pb2.Status.SerializeToString,
+                    request_deserializer=graderrequest__pb2.File.FromString,
+                    response_serializer=graderrequest__pb2.Status.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
-            'requestPackage.GradeService', rpc_method_handlers)
+            'GraderRequestPackage.GraderRequestService', rpc_method_handlers)
     server.add_generic_rpc_handlers((generic_handler,))
 
 
  # This class is part of an EXPERIMENTAL API.
-class GradeService(object):
+class GraderRequestService(object):
     """Missing associated documentation comment in .proto file."""
 
     @staticmethod
@@ -59,8 +59,8 @@ class GradeService(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/requestPackage.GradeService/GradeFile',
-            request__pb2.File.SerializeToString,
-            request__pb2.Status.FromString,
+        return grpc.experimental.unary_unary(request, target, '/GraderRequestPackage.GraderRequestService/GradeFile',
+            graderrequest__pb2.File.SerializeToString,
+            graderrequest__pb2.Status.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)

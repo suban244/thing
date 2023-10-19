@@ -3,17 +3,21 @@ package grader
 import (
 	"context"
 	"fmt"
+	"log"
 	"strconv"
 	"time"
+
+	pb "thing/auto-grader/graderrequest"
+
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials/insecure"
 
 	"github.com/jackc/pgx/v5"
 )
 
 type Service interface {
 	RegisterFile(username string, filename string) (string, error)
-	LaunchGrader(fileid string)
-
-	// HandleFileUpload(filename string) error
+	LaunchGrader(fileid string, filename string)
 }
 
 type service struct {
@@ -35,11 +39,32 @@ func NewService(conn *pgx.Conn) Service {
 }
 
 // In the future, this will make a request to the grader server
-func (s *service) LaunchGrader(fileid string) {
-	go s.grade(fileid)
+func (s *service) LaunchGrader(fileid string, filename string) {
+	go s.sendGradeRequest(fileid, filename)
 }
 
-func (s *service) grade(fileid string) {
+func (s *service) sendGradeRequest(fileid string, filename string) {
+	addr := "localhost:4000"
+
+	conn, err := grpc.Dial(addr, grpc.WithTransportCredentials(insecure.NewCredentials()))
+	if err != nil {
+		log.Fatalf("did not connect: %v", err)
+	}
+	defer conn.Close()
+	c := pb.NewGraderRequestServiceClient(conn)
+
+	// Contact the server and print out its response.
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second*10)
+	defer cancel()
+	r, err := c.GradeFile(ctx, &pb.File{Fileid: fileid, Filename: filename})
+	if err != nil {
+		log.Fatalf("could not send grade request: %v", err)
+	}
+
+	log.Printf("Servercode: %d", r.GetStatusCode())
+}
+
+func (s *service) gradeTest(fileid string) {
 	// TODO: MAGIC, Makes the grpc call
 	time.Sleep(time.Second * 60)
 
