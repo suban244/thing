@@ -11,9 +11,9 @@
     <script src="https://unpkg.com/htmx.org@1.9.6"></script>
   </head>
   <body class="bg-gray-100">
-    <div class="min-h-screen flex items-center justify-center">
+    <div class="min-h-screen flex flex-col items-center justify-center">
       <form
-        class="bg-white p-6 rounded-lg shadow-md max-w-md"
+        class="bg-white p-6 rounded-lg shadow-md max-w-md mb-4"
         enctype="multipart/form-data"
         hx-post="/auto-grader/upload"
         hx-swap="outerHTML"
@@ -47,6 +47,18 @@
           Upload
         </button>
       </form>
+
+      <!-- View All Submissions Button -->
+      <a href="/auto-grader/view">
+        <button
+          id="viewSubmissions"
+          class="bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-4 rounded-lg"
+          hx-get="/auto-grader/view-submissions"
+          hx-swap="outerHTML"
+        >
+          View All Submissions
+        </button>
+      </a>
     </div>
   </body>
 </html>

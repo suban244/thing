@@ -51,3 +51,30 @@ func UploadFile(g grader.Service) fiber.Handler {
 		return c.Render("file-upload-success", fiber.Map{})
 	}
 }
+
+func ViewStatus() fiber.Handler {
+	return func(c *fiber.Ctx) error {
+		return c.Render("view-grades", fiber.Map{})
+	}
+}
+
+func ReturnResult(g grader.Service) fiber.Handler {
+	return func(c *fiber.Ctx) error {
+		payload := struct {
+			Username string `json:"username"`
+		}{}
+		if err := c.BodyParser(&payload); err != nil {
+			fmt.Print(err)
+			return err
+		}
+		results, err := g.LoadResults(payload.Username)
+		if err != nil {
+			fmt.Print(err)
+			return err
+		}
+
+		return c.Render("view-grades-result", fiber.Map{
+			"results": results,
+		})
+	}
+}

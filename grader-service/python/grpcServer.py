@@ -17,11 +17,19 @@ def UploadScore(dbParams, fileid: str, result: test_calc.GradingResult):
                 """
                 UPDATE submissions
                 SET isgraded = %s,
+                    obtainedscore = %s,
+                    maxscore = %s,
                     feedback = %s
                 WHERE fileid=%s
                 returning *;
             """,
-                (True, result.feedback, int(fileid)),
+                (
+                    True,
+                    result.obtainedScore,
+                    result.maxScore,
+                    result.feedback,
+                    int(fileid),
+                ),
             )
             print(cur.fetchone())
 
@@ -81,7 +89,7 @@ if __name__ == "__main__":
         "host": os.getenv("HOST"),
         "port": os.getenv("DB_PORT"),
     }
-    # UploadScore(params, "1", test_calc.GradingResult(0, 1, "test"))
+    # UploadScore(params, "1", test_calc.GradingResult(6, 8, "test"))
     # viewAll(params)
 
     serve(params)

@@ -1,0 +1,42 @@
+<div id="result" class="text-left">
+  <table class="min-w-full table-auto border-collapse border border-gray-300">
+    <thead>
+      <tr>
+        <th class="px-4 py-2">Filename</th>
+        <th class="px-4 py-2">Graded</th>
+        <th class="px-4 py-2">Obtained Score</th>
+        <th class="px-4 py-2">Max Score</th>
+        <th class="px-4 py-2">Feedback</th>
+      </tr>
+    </thead>
+    <tbody>
+      {{range .results}}
+      <tr>
+        <!-- TODO: Turn this into a link to download the file -->
+        <td class="px-4 py-2">{{.Filename}}</td>
+        <td class="px-4 py-2">
+          {{ if .Isgraded}}
+          <span class="bg-green-200 text-green-800 px-2 py-1 rounded"
+            >{{.Isgraded}}</span
+          >
+          {{ else }}
+          <span class="bg-red-200 text-red-800 px-2 py-1 rounded"
+            >Not Graded</span
+          >
+          {{- end}}
+        </td>
+        {{ if .Isgraded }}
+        <td class="px-4 py-2">{{.Obtainedscore}}</td>
+        <td class="px-4 py-2">{{.Maxscore}}</td>
+        <td class="px-4 py-2">{{.Feedback}}</td>
+        {{ else}}
+        <td class="px-4 py-2">-</td>
+        <td class="px-4 py-2">-</td>
+        <td class="px-4 py-2">-</td>
+
+        {{- end}}
+      </tr>
+      {{end}}
+    </tbody>
+  </table>
+</div>
