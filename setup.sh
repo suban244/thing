@@ -1,10 +1,8 @@
 # fedora 
-if [ "$1" = "setup" ]; then
-  sudo dnf install nginx tmux git
-fi
+
 
 if [ "$1" = "go" ]; then
-  sudo dnf install go
+  sudo dnf install go nginx
   go get
 
   go build
