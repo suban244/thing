@@ -8,3 +8,9 @@ Currently consists of
   - file _will_ is stored in a bucket
   - a grpc call to a python server to grade a file
   - you view the grade
+
+TODO
+
+- Deploy
+- do blob storage (backblaze)
+- allow users to download files (backblaze)
