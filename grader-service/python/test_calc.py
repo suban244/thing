@@ -1,6 +1,8 @@
 import importlib.util
 import sys
 import shutil
+import boto3
+import os
 
 
 class GradingResult:
@@ -63,8 +65,20 @@ def move_file(filepath: str):
     return target
 
 
-def load_module(filepath: str):
-    moved_file = move_file(filepath)
+def download_file(fileid: str):
+    s3 = boto3.client("s3")
+    saveto = f"solution/calc-{fileid}.py"
+    # with open(saveto, "wb") as f:
+    #     s3.download_fileobj(
+    #         os.getenv("BACKBLAZE_KEY_NAME"), f"uploaded-files/{fileid}", f
+    #     )
+    s3.download_file(os.getenv("BACKBLAZE_KEY_NAME"), fileid, saveto)
+    return saveto
+
+
+def load_module(fileid: str):
+    # moved_file = move_file(filepath)
+    moved_file = download_file(fileid)
     try:
         spec = importlib.util.spec_from_file_location("module.name", moved_file)
         if spec:
@@ -79,12 +93,12 @@ def load_module(filepath: str):
         return None
 
 
-def run_tests(filepath: str) -> GradingResult:
+def run_tests(fileid: str) -> GradingResult:
     tests = {test_add: 5, test_sub: 4}
     max_score = sum([x for x in tests.values()])
     obtained_score = 0
 
-    loadedModule = load_module(filepath)
+    loadedModule = load_module(fileid)
     if loadedModule:
         for k, v in tests.items():
             passed = k(loadedModule)

@@ -61,7 +61,7 @@ class RequestService(graderrequest_pb2_grpc.GraderRequestService):
 
         # TODO: Launch a thread for this
         # TODO: Download file
-        result = test_calc.run_tests("../../uploaded-files/" + req.fileid)
+        result = test_calc.run_tests(req.fileid)
         print(result)
         UploadScore(self.dbParams, req.fileid, result)
 

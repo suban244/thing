@@ -4,9 +4,8 @@
 if [ "$1" = "go" ]; then
   sudo dnf install go nginx
   go get
-
   go build
-  ./thing
+
 fi
 
 if [ "$1" = "python" ]; then
@@ -15,6 +14,6 @@ if [ "$1" = "python" ]; then
   curl  https://bootstrap.pypa.io/get-pip.py > get-pip.py
   python get-pip.py
   pip install -r requirements.txt
-  python grpcServer.py
+
 fi
 

@@ -1,5 +1,5 @@
 grpcio
 grpcio-tools
 python-dotenv
-pip install "psycopg[binary]"
+psycopg[binary]
 

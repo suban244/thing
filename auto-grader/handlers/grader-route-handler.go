@@ -39,11 +39,14 @@ func UploadFile(g grader.Service) fiber.Handler {
 			return err
 		}
 
-		err = c.SaveFile(file, fmt.Sprintf("./uploaded-files/%s", fileid))
+		dest := fmt.Sprintf("./uploaded-files/%s", fileid)
+		err = c.SaveFile(file, dest)
 		if err != nil {
 			log.Println(err)
 			return err
 		}
+
+		g.UploadFile(fileid, dest)
 
 		// TODO: Launch a process to grade file
 		g.LaunchGrader(fileid, file.Filename)

@@ -11,6 +11,7 @@ Currently consists of
 
 TODO
 
-- Deploy
-- do blob storage (backblaze)
+- ~~Deploy~~ (Did a single server deployment)
+- ~~do blob storage (backblaze)~~
+- **Remove the technical debt oof**
 - allow users to download files (backblaze)

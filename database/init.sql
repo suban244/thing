@@ -10,3 +10,9 @@ CREATE TABLE submissions (
 
   feedback varchar(255)
 );
+
+CREATE TABLE assignment (
+  assignmentid varchar(64) not null
+
+
+)

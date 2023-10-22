@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"log"
+	"os"
 	"strconv"
 	"time"
 
@@ -13,6 +14,11 @@ import (
 	"google.golang.org/grpc/credentials/insecure"
 
 	"github.com/jackc/pgx/v5"
+
+	"github.com/aws/aws-sdk-go/aws"
+	"github.com/aws/aws-sdk-go/aws/credentials"
+	"github.com/aws/aws-sdk-go/aws/session"
+	"github.com/aws/aws-sdk-go/service/s3"
 )
 
 type Result struct {
@@ -38,6 +44,7 @@ type Service interface {
 	RegisterFile(username string, filename string) (string, error)
 	LaunchGrader(fileid string, filename string)
 	LoadResults(username string) ([]Result, error)
+	UploadFile(fileid string, filepath string)
 }
 
 type service struct {
@@ -54,6 +61,10 @@ func NewService(conn *pgx.Conn) Service {
 // In the future, this will make a request to the grader server
 func (s *service) LaunchGrader(fileid string, filename string) {
 	go s.sendGradeRequest(fileid, filename)
+}
+
+func (s *service) UploadFile(fileid string, filepath string) {
+	go s.uploadFile(fileid, filepath)
 }
 
 func (s *service) RegisterFile(username string, filename string) (string, error) {
@@ -124,6 +135,52 @@ func (s *service) sendGradeRequest(fileid string, filename string) {
 	}
 
 	log.Printf("Servercode: %d", r.GetStatusCode())
+}
+
+func (s *service) uploadFile(fileid string, filepath string) {
+	fmt.Println("Method called")
+
+	bucket := aws.String(os.Getenv("BACKBLAZE_KEY_NAME"))
+	key := aws.String(fileid)
+
+	s3Config := &aws.Config{
+		Credentials: credentials.NewStaticCredentials(
+			os.Getenv("BACKBLAZE_KEY_ID"),
+			os.Getenv("BACKBLAZE_APPLICATION_KEY"),
+			"",
+		),
+		Endpoint:         aws.String(os.Getenv("AWS_ENDPOINT_URL")),
+		Region:           aws.String(os.Getenv("AWS_REGION")),
+		S3ForcePathStyle: aws.Bool(true),
+	}
+	newSession, err := session.NewSession(s3Config)
+	if err != nil {
+		log.Printf("Error while creaing a new session: %v", err)
+		return
+	}
+
+	fmt.Println("Session made")
+	s3Client := s3.New(newSession)
+	fmt.Println("client made")
+
+	filedata, err := os.Open(filepath)
+	if err != nil {
+		log.Printf("Unable to open file: %s. %v", filepath, err)
+		return
+	}
+
+	// Upload a new object "testfile.txt" with the string "S3 Compatible API"
+	_, err = s3Client.PutObject(&s3.PutObjectInput{
+		Body:   filedata,
+		Bucket: bucket,
+		Key:    key,
+	})
+
+	if err != nil {
+		fmt.Printf("Failed to upload object %s/%s, %s\n", *bucket, *key, err.Error())
+		return
+	}
+	fmt.Printf("Successfully uploaded key %s\n", *key)
 }
 
 // Bad just for testing
