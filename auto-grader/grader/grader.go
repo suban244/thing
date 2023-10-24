@@ -182,30 +182,3 @@ func (s *service) uploadFile(fileid string, filepath string) {
 	}
 	fmt.Printf("Successfully uploaded key %s\n", *key)
 }
-
-// Bad just for testing
-func (s *service) tempTestingGrader(fileid string) {
-	// TODO: MAGIC, Makes the grpc call
-	time.Sleep(time.Second * 60)
-
-	// TODO: figure out how to remove this variable without causing error
-	var filename string
-
-	feedback := "very gud"
-	err := s.conn.QueryRow(
-		context.Background(),
-		`
-    UPDATE submissions
-    SET isgraded = $1,
-        feedback = $2
-    WHERE fileid=$3
-    returning filename
-    ;
-
-    `,
-		true, feedback, fileid).Scan(&filename)
-	//     RETURNING *;  for getting the object
-	if err != nil {
-		fmt.Println(err)
-	}
-}

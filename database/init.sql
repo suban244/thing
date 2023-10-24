@@ -1,18 +1,23 @@
-CREATE TABLE submissions (
-  fileid serial primary key,
+CREATE TABLE submission (
+  submissionid serial primary key,
 
   username varchar(64) not null,
-  filename varchar(64) not null,
+  assignment varchar(64) not null,
 
   isgraded boolean default false,
-  obtainedscore int,
-  maxscore int,
 
+  obtainedscore int,
   feedback varchar(255)
+
+  FOREIGN KEY(assignment) REFERENCES assignment(assignmentid)
+
 );
 
 CREATE TABLE assignment (
-  assignmentid varchar(64) not null
+  assignmentid varchar(64) not null,
+  gradingfile varchar(64) not null,
 
+  totalscore int,
 
-)
+  PRIMARY KEY(assignmentid)
+);

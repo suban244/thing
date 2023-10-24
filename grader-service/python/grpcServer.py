@@ -1,18 +1,20 @@
 import grpc
 from concurrent import futures
-import graderrequest_pb2
-import graderrequest_pb2_grpc
+from grader_modules.models import GradingReport
+import graderrequest_pb2_grpc, graderrequest_pb2
+
 import os
 
 from dotenv import load_dotenv
 
-import test_calc
 import psycopg
+import grader
 
 
-def UploadScore(dbParams, fileid: str, result: test_calc.GradingResult):
+def UploadScore(dbParams, fileid: str, result: GradingReport):
     with psycopg.connect(**dbParams, sslmode="require") as conn:
         with conn.cursor() as cur:
+            obtainedScore, totalScore = result.getFinalScore()
             cur.execute(
                 """
                 UPDATE submissions
@@ -25,9 +27,9 @@ def UploadScore(dbParams, fileid: str, result: test_calc.GradingResult):
             """,
                 (
                     True,
-                    result.obtainedScore,
-                    result.maxScore,
-                    result.feedback,
+                    obtainedScore,
+                    totalScore,
+                    "yay it works",
                     int(fileid),
                 ),
             )
@@ -61,7 +63,7 @@ class RequestService(graderrequest_pb2_grpc.GraderRequestService):
 
         # TODO: Launch a thread for this
         # TODO: Download file
-        result = test_calc.run_tests(req.fileid)
+        result = grader.run_tests(req.fileid)
         print(result)
         UploadScore(self.dbParams, req.fileid, result)
 
@@ -89,7 +91,5 @@ if __name__ == "__main__":
         "host": os.getenv("HOST"),
         "port": os.getenv("DB_PORT"),
     }
-    # UploadScore(params, "1", test_calc.GradingResult(6, 8, "test"))
-    # viewAll(params)
 
     serve(params)

@@ -15,3 +15,6 @@ TODO
 - ~~do blob storage (backblaze)~~
 - **Remove the technical debt oof**
 - allow users to download files (backblaze)
+
+- See how you can directly upload without saving a local copy
+- Auth
