@@ -3,31 +3,22 @@ import sys
 import boto3
 import os
 
+from dotenv import load_dotenv
+
 from grader_modules.models import GradingReport
 from grader_modules.helpers import load_module
 
 
 def download_file(fileid: str) -> str:
-    s3 = boto3.client("s3")
+    s3 = boto3.client(
+        "s3",
+        aws_access_key_id=os.getenv("BACKBLAZE_KEY_ID"),
+        aws_secret_access_key=os.getenv("BACKBLAZE_APPLICATION_KEY"),
+        endpoint_url=os.getenv("AWS_ENDPOINT_URL"),
+    )
     saveto = f"solution/calc-{fileid}.py"
-    s3.download_file(os.getenv("BACKBLAZE_KEY_NAME"), fileid, saveto)
+    s3.download_file("auto-grader", fileid, saveto)
     return saveto
-
-
-def load_moduleOld(fileid: str, module_name="module.name"):
-    module_file = download_file(fileid)
-    try:
-        spec = importlib.util.spec_from_file_location(module_name, module_file)
-        if spec:
-            loadedModule = importlib.util.module_from_spec(spec)
-            sys.modules["module.name"] = loadedModule
-            if spec.loader:
-                spec.loader.exec_module(loadedModule)
-                return loadedModule
-        return None
-    except Exception as e:
-        print(e)
-        return None
 
 
 def run_tests(fileid: str, assignmentid: str = "test_calc.py") -> GradingReport:
@@ -49,4 +40,5 @@ def run_tests(fileid: str, assignmentid: str = "test_calc.py") -> GradingReport:
 
 
 if __name__ == "__main__":
-    print(run_tests("calc.py").getFinalScore())
+    load_dotenv("../../.env")
+    print(run_tests("32").getFinalScore())

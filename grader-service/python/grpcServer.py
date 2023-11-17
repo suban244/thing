@@ -85,11 +85,10 @@ def serve(dbParams):
 if __name__ == "__main__":
     load_dotenv("../../.env")
     params = {
-        "dbname": os.getenv("DB_NAME"),
-        "user": os.getenv("DB_USER"),
-        "password": os.getenv("PASSWORD"),
-        "host": os.getenv("HOST"),
-        "port": os.getenv("DB_PORT"),
+        "dbname": os.getenv("DATABASE_NAME"),
+        "user": os.getenv("DATABASE_USER"),
+        "password": os.getenv("DATABASE_PASSWORD"),
+        "host": os.getenv("DATABASE_HOST"),
+        "port": os.getenv("DATABASE_PORT"),
     }
-
     serve(params)

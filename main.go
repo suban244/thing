@@ -5,14 +5,15 @@ import (
 	"fmt"
 	"log"
 	"os"
-	"thing/auto-grader/grader"
-	graderroutes "thing/auto-grader/routes"
 	"time"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/template/html/v2"
 	"github.com/jackc/pgx/v5"
 	"github.com/joho/godotenv"
+
+	"thing/auto-grader/grader"
+	graderroutes "thing/auto-grader/routes"
 )
 
 type Pom struct {

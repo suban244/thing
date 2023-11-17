@@ -8,17 +8,15 @@ import (
 	"strconv"
 	"time"
 
-	pb "thing/auto-grader/graderrequest"
-
-	"google.golang.org/grpc"
-	"google.golang.org/grpc/credentials/insecure"
-
-	"github.com/jackc/pgx/v5"
-
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/credentials"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/s3"
+	"github.com/jackc/pgx/v5"
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials/insecure"
+
+	pb "thing/auto-grader/graderrequest"
 )
 
 type Result struct {
@@ -99,7 +97,6 @@ func (s *service) viewGrades(username string) ([]Result, error) {
 		var result Result
 
 		err := rows.Scan(
-			// &result.Username,
 			&result.Filename,
 			&result.Isgraded,
 			&result.Obtainedscore,
@@ -117,6 +114,7 @@ func (s *service) viewGrades(username string) ([]Result, error) {
 }
 
 func (s *service) sendGradeRequest(fileid string, filename string) {
+	time.Sleep(time.Second)
 	addr := "localhost:4000"
 
 	conn, err := grpc.Dial(addr, grpc.WithTransportCredentials(insecure.NewCredentials()))

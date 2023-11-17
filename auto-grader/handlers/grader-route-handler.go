@@ -3,9 +3,10 @@ package handlers
 import (
 	"fmt"
 	"log"
-	"thing/auto-grader/grader"
 
 	"github.com/gofiber/fiber/v2"
+
+	"thing/auto-grader/grader"
 )
 
 func Index() fiber.Handler {
@@ -81,3 +82,34 @@ func ReturnResult(g grader.Service) fiber.Handler {
 		})
 	}
 }
+
+func ViewAssignments() fiber.Handler {
+	return func(c *fiber.Ctx) error {
+		return c.Render("assignment", fiber.Map{})
+	}
+}
+
+func CreateNewAssignment() fiber.Handler{
+  return func(c *fiber.Ctx) error {
+    payload := struct {
+      Username string `json:"username"`
+      Assignment string `json:"assignment"`
+    }{}
+
+    if err := c.BodyParser(&payload); err != nil {
+      fmt.Print(err)
+      return err
+    }
+
+    // Call some Service in grader
+    fmt.Println(payload)
+    feedback := "Successfully Created Assignment"
+    return c.Render("assignment-creation-success", fiber.Map{
+      "message": feedback,
+    })
+  }
+}
+
+func DeleteAssignment() {}
+func UpdateAssignment() {}
+func GetAssignmentSubmissions() {}

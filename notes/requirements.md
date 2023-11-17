@@ -6,3 +6,9 @@
 - Dynamically loads the submission file
   - downloaded and loaded from s3
   - deleted afte submission
+
+
+Pages
+- submission
+- View Assignments
+- Create a assignment

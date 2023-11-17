@@ -2,4 +2,5 @@ grpcio
 grpcio-tools
 python-dotenv
 psycopg[binary]
+python-dotenv
 
